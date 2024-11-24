@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GREEN-API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin-bottom: 20px; }
+        textarea { width: 100%; height: 150px; }
+    </style>
+</head>
+<body>
+
+<h1>Тестирование GREEN-API</h1>
+
+<div class="section">
+    <label for="idInstance">ID Instance:</label>
+    <input type="text" id="idInstance" placeholder="Введите ID Instance">
+</div>
+
+<div class="section">
+    <label for="apiTokenInstance">API Token Instance:</label>
+    <input type="text" id="apiTokenInstance" placeholder="Введите API Token Instance">
+</div>
+
+<div class="section">
+    <button onclick="getSettings()">getSettings</button>
+    <button onclick="getStateInstance()">getStateInstance</button>
+</div>
+
+<div class="section">
+    <label for="phoneNumber">Номер телефона:</label>
+    <input type="tel" id="phoneNumber" placeholder="+15551234567">
+    <label for="message">Сообщение:</label>
+    <input type="text" id="message" placeholder="Введите сообщение">
+    <button onclick="sendMessage()">sendMessage</button>
+</div>
+
+<div class="section">
+    <label for="fileUrl">URL файла:</label>
+    <input type="url" id="fileUrl" placeholder="Введите URL файла">
+    <button onclick="sendFileByUrl()">sendFileByUrl</button>
+</div>
+
+<div class="section">
+    <label for="output">Ответ:</label>
+    <textarea id="output" readonly></textarea>
+</div>
+
+<script>
+    const apiUrl = 'https://api.green-api.com'; 
+
+    async function getSettings() {
+        const idInstance = document.getElementById('idInstance').value;
+        const apiTokenInstance = document.getElementById('apiTokenInstance').value;
+        const url = `${apiUrl}/waInstance${idInstance}/getSettings/${apiTokenInstance}`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            document.getElementById('output').value = JSON.stringify(data, null, 2);
+        } catch (error) {
+            console.error("Ошибка:", error);
+            document.getElementById('output').value = "Ошибка при получении настроек";
+        }
+    }
+
+    async function getStateInstance() {
+        const idInstance = document.getElementById('idInstance').value;
+        const apiTokenInstance = document.getElementById('apiTokenInstance').value;
+        const url = `${apiUrl}/waInstance${idInstance}/getStateInstance/${apiTokenInstance}`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            document.getElementById('output').value = JSON.stringify(data, null, 2);
+        } catch (error) {
+            console.error("Ошибка:", error);
+            document.getElementById('output').value = "Ошибка при получении состояния инстанса";
+        }
+    }
+
+    async function sendMessage() {
+        const idInstance = document.getElementById('idInstance').value;
+        const apiTokenInstance = document.getElementById('apiTokenInstance').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const message = document.getElementById('message').value;
+        const url = `${apiUrl}/waInstance${idInstance}/sendMessage/${apiTokenInstance}`;
+        
+        const body = {
+            "chatId": phoneNumber,
+            "message": message
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            const data = await response.json();
+            document.getElementById('output').value = JSON.stringify(data, null, 2);
+        } catch (error) {
+            console.error("Ошибка:", error);
+            document.getElementById('output').value = "Ошибка при отправке сообщения";
+        }
+    }
+
+    async function sendFileByUrl() {
+        const idInstance = document.getElementById('idInstance').value;
+        const apiTokenInstance = document.getElementById('apiTokenInstance').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const fileUrl = document.getElementById('fileUrl').value;
+        const url = `${apiUrl}/waInstance${idInstance}/sendFileByUrl/${apiTokenInstance}`;
+        
+        const body = {
+            "chatId": phoneNumber,
+            "fileUrl": fileUrl
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            const data = await response.json();
+            document.getElementById('output').value = JSON.stringify(data, null, 2);
+        } catch (error) {
+            console.error("Ошибка:", error);
+            document.getElementById('output').value = "Ошибка при отправке файла";
+        }
+    }
+</script>
+
+</body>
+</html>
